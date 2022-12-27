@@ -1,0 +1,63 @@
+<nav class="navbar navbar-expand-lg bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-light" href="/"> <strong>CamKart</strong> </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- <li class="nav-item">
+                    <a class="nav-link text-light" aria-current="page" href="#">Camera</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/cart">Cart</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Category
+                    </a>
+                    <ul class="dropdown-menu bg-dark">
+                        <li><a class="dropdown-item text-light" href="#">DSLR</a></li>
+                        <li><a class="dropdown-item text-light" href="#">Mirrorless</a></li>
+                        <li><a class="dropdown-item text-light" href="#">GO Pro</a></li>
+                        <li><a class="dropdown-item text-light" href="#">lens</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </li>
+               
+            </ul>
+            
+            <div >
+                
+                <!-- <a href="/login"><button class="btn btn-primary text-light ">Login</button></a> -->
+                <div class="btn-group">
+                    <% if (sessionData) {%>
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                          <%= sessionData %>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-lg-end">
+                            <li><a class="dropdown-item " href="/userProfile">My Profile</a></li>
+                            <li><a class="dropdown-item " href="/cart">  <i class="fa-sharp fa-solid fa-cart-shopping"></i> Orders</a></li>
+                            <li><a class="dropdown-item " href="#"> <i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                            <li><a class="dropdown-item " href="/logout">LogOut</a></li>
+                        </ul>
+                        <% }else{%>
+                        <a href="/login"><button class="btn btn-primary text-light  " >Login</button></a>
+                    <% } %>
+                    
+                  </div>
+                
+                
+            </div>
+        </div>
+        
+    </div>
+</nav>

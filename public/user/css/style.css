@@ -1,0 +1,21 @@
+
+.container{
+    max-width: 500px;
+}
+.login-form{
+    padding-top: 100px;
+}
+.signup-form{
+    padding-top: 60px;
+}
+.colorlib-product{
+    padding-top: 50px;
+}
+.description-part{
+    padding-top: 50px;
+}
+.nav-link.active,
+.show > .nav-link {
+    background-color:  rgb(94, 89, 89) !important;
+
+}

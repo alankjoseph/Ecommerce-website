@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP verificaion</title>
+   
+</head>
+
+<body>
+    <section class="sign-in">
+        <div class="container box-fom" >
+            <div class="signin-content " style="    margin-right: 20px;">
+                
+
+                <div class="signin-form">
+                    
+                    <h2 class="form-title">USER OTP</h2>
+                    <div class="alert alert-danger" role="alert">
+                        <%=locals.wrong%>
+                      </div>
+                    <form action ="/otp" method="POST" class="register-form" id="login-form">
+                        <div class="form-group">
+                            <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="otp" name="otp" id="your_name" placeholder="OTP" required/>
+                        </div>
+                        
+                        <!-- <div class="form-group">
+                            <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                            <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                        </div> -->
+                        <div class="form-group form-button">
+                            <button type="submit" name="signin"  class="form-submit" onclick="test()" >SUBMIT</button>
+                        </div>
+                    </form>
+                    
+               
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
