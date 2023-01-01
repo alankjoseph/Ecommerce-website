@@ -17,5 +17,8 @@ router.get('/userProfile',userController.getUserProfile)
 router.get('/productDetails',userController.getProductDetails)
 router.get('/cart',sessionMV.verifyLoginUser,userController.getCart)
 router.get('/addToCart/:id',sessionMV.verifyLoginUser,userController.addToCart)
+router.post('/removeProduct', sessionMV.verifyLoginUser, userController.removeProduct)
+router.post('/changeQuantity',sessionMV.verifyLoginUser,userController.changeQuantity)
+router.get('/checkout',sessionMV.verifyLoginUser,userController.getCheckout)
 
 module.exports = router;

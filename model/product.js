@@ -5,8 +5,8 @@ const productSchema=new mongoose.Schema({
     description:String,
     category:String,
     image:String,
-    price:String,
-    quantity:String,
+    price:Number,
+    quantity:Number,
     status:{
         type:Boolean,
         default:true

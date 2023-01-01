@@ -22,7 +22,7 @@
                 
 				<div class="row row-pb-md pt-4" >
                     <% data.forEach(function(product){ %>
-					<div class="col-lg-3 mb-4 text-center ">
+					<div class="col-lg-3 col-md-6 mb-4 text-center ">
 						<div class="product-entry p-3 border"  style="height: 300px;">
                             <div class="" style="height: 160px;">
                                 <a href="/productDetails?id=<%=product._id%>" class="prod-img" >
@@ -32,7 +32,7 @@
 							<div class="desc mt-2" >
                                 <a href="/productDetails" style="text-decoration: none; color: black;"  ><%=product.name%></a>
 								
-								<h6 class="price  mt-2"><%=product.price%></h6>
+								<h6 class="price  mt-2">₹ <%=product.price%></h6>
 							</div>
 						</div>
 					</div>

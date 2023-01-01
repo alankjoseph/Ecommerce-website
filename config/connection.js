@@ -10,7 +10,7 @@ module.exports = {
         useUnifiedTopology: true,
       })
       .then(() => {
-        console.log("Database is connected successfully");
+        console.log("Database connected successfully");
       })
       .catch((err) => console.log("error" + err));
   },

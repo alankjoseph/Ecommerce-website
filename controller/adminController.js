@@ -70,14 +70,33 @@ module.exports = {
     getAddCategory: (req, res) => {
         res.render('admin/addCategory')
     },
-    insertCategory: (req, res) => {
+    insertCategory: async (req, res) => {
         try {
-            let category = new Category({
-                name: req.body.name,
-                image: req.file.filename,
-            })
-            category.save();
-            res.redirect('/admin/category');
+
+            const categoryData = req.body.name;
+            const allCategories = await Category.find();
+            const verify = await Category.findOne({ name: categoryData });
+            // let category = new Category({
+            //     name: req.body.name,
+            //     image: req.file.filename,
+            // })
+            // category.save();
+            // res.redirect('/admin/category');
+            if (verify == null) {
+                const newCategory = new Category({
+                    name: req.body.name,
+                    image: req.file.filename,
+                });
+                newCategory.save().then(() => {
+                  res.redirect("/admin/category");
+                });
+              } else {
+                res.render("admin/addCategory", {
+                  err_message: "category already exists",
+                  allCategories,
+                });
+              }
+            
         } catch (error) {
             console.log(error.message);
         }
