@@ -2,53 +2,95 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | CamKart</title>
-    <link rel="stylesheet" href="/user/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | CamKart</title>
+  <link rel="stylesheet" href="/user/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-    <%- include('../partials/userNav.ejs') %>
+  <%- include('../partials/userNav.ejs') %>
     <main>
-        <div >
-			<div class="container">
-				
-                
-				<div class="row row-pb-md pt-4" >
-                    <% data.forEach(function(product){ %>
-					<div class="col-lg-3 col-md-6 mb-4 text-center ">
-						<div class="product-entry p-3 border"  style="height: 300px;">
-                            <div class="" style="height: 160px;">
-                                <a href="/productDetails?id=<%=product._id%>" class="prod-img" >
-                                    <img src="/admin/img/<%=product.image%>"  style="width: auto; max-height: 140px;" class="img-fluid" alt="">
-                                </a>
-                            </div>
-							<div class="desc mt-2" >
-                                <a href="/productDetails" style="text-decoration: none; color: black;"  ><%=product.name%></a>
-								
-								<h6 class="price  mt-2">₹ <%=product.price%></h6>
-							</div>
-						</div>
-					</div>
-                    <% }) %>	
-				</div>
-				
-			</div>
-		</div>
+      <div>
+        <div class="container">
+
+
+          <div class="row row-pb-md pt-4">
+            <% data.forEach(function(product){ %>
+              <div class="col-lg-3 col-md-6 mb-4 text-center ">
+                <div class="product-entry p-3  card h-100" style="height: 300px;">
+                  <div class="text-end">
+                    <span class="text-danger" id="<%= product._id %>"></span>
+                    <button id="wishButton" class="btn btn-outline-none" onclick="addToWishlist('<%= product._id %>')">
+                      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                        width="25" height="25" viewBox="0 0 256 256" xml:space="preserve">
+                        <defs></defs>
+                        <g style="
+                                        stroke: none;
+                                        stroke-width: 0;
+                                        stroke-dasharray: none;
+                                        stroke-linecap: butt;
+                                        stroke-linejoin: miter;
+                                        stroke-miterlimit: 10;
+                                        fill: none;
+                                        fill-rule: nonzero;
+                                        opacity: 1;
+                                      " transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                          <path
+                            d="M 64.44 12.016 c 5.225 0 10.136 2.035 13.831 5.729 c 7.626 7.626 7.626 20.035 0 27.662 l -19.44 19.44 L 45 78.677 L 31.169 64.846 l -19.44 -19.44 c -7.626 -7.626 -7.626 -20.035 0 -27.662 c 3.694 -3.694 8.606 -5.729 13.831 -5.729 c 5.225 0 10.136 2.035 13.831 5.729 l 1.367 1.367 L 45 23.354 l 4.242 -4.242 l 1.367 -1.367 C 54.304 14.05 59.216 12.016 64.44 12.016 M 64.44 6.016 c -6.541 0 -13.083 2.495 -18.073 7.486 L 45 14.869 l 0 0 l 0 0 l -1.367 -1.367 C 38.642 8.511 32.101 6.016 25.56 6.016 S 12.477 8.511 7.486 13.502 c -9.982 9.982 -9.982 26.165 0 36.147 l 19.44 19.44 c 0 0 0 0 0.001 0 L 45 87.163 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 c 9.982 -9.982 9.982 -26.165 0 -36.147 C 77.523 8.511 70.982 6.016 64.44 6.016 L 64.44 6.016 z"
+                            style="
+                                          stroke: none;
+                                          stroke-width: 1;
+                                          stroke-dasharray: none;
+                                          stroke-linecap: butt;
+                                          stroke-linejoin: miter;
+                                          stroke-miterlimit: 10;
+                                          fill: rgb(0, 0, 0);
+                                          fill-rule: nonzero;
+                                          opacity: 1;
+                                        " transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                        </g>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="" style="height: 160px;">
+                    <a href="/productDetails?id=<%=product._id%>" class="prod-img">
+                      <img src="/admin/img/<%=product.image%>" style="width: auto; max-height: 140px;" class="img-fluid"
+                        alt="">
+                    </a>
+                  </div>
+                  <div class="desc mt-2">
+                    <a href="/productDetails" style="text-decoration: none; color: black;">
+                      <%=product.name%>
+                    </a>
+
+                    <h6 class="price  mt-2">₹ <%=product.price%>
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+          </div>
+
+        </div>
+      </div>
     </main>
-   
+
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/user/js/main.js"></script>
 </body>
 
 </html>

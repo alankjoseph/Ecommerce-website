@@ -111,7 +111,7 @@
                                     <p class="mb-0">password</p>
                                   </div>
                                   <div class="col-sm-9">
-                                    <p class="text-muted mb-0"></button><a href="/changePassword/"><button type="button"
+                                    <p class="text-muted mb-0"></button><a href="/changePassword"><button type="button"
                                         class="btn btn-dark btn-block   " style="width: auto;" data-mdb-ripple-color="dark">
                                         Change Password
                                       </button></a></p>
@@ -124,13 +124,14 @@
                                     <p class="mb-0">Address </p>
                                   </div>
                                   <div class="col-sm-9">
+                                    <% address.forEach(add=> { %>
                                     <p class="text-muted mb-0">
-                                      <%= data.firstName %><br />
-                                      <%= data.firstName %><br />
-                                      <%= data.firstName %><br />
-                                      <%= data.firstName %><br />
-                                      <%= data.firstName %>
+                                      <%= add.address %><br />
+                                      <%= add.state %><br />
+                                      <%= add.city %><br />
+                                      <%= add.pincode %>
                                     </p>
+                                    <% }) %>
                                   </div>
                                 </div>
                                 <hr />
@@ -138,7 +139,7 @@
                                 <div class="row">
                                   
                                   <div class="col-sm-3">
-                                    <a href="/editAccount"
+                                    <a href="/addAddress"
                                       ><button
                                         type="button"
                                         class="btn btn-dark btn-block "

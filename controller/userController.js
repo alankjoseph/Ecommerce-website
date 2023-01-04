@@ -3,11 +3,14 @@ const User = require("../model/userSignup");
 const mailer = require("../config/otp");
 const Product = require("../model/product");
 const Carts = require("../model/carts");
+const Address = require('../model/address')
+const Wishlist = require('../model/wishlist')
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 let count;
+let wishCount
 module.exports = {
     getHome: async (req, res) => {
         try {
@@ -15,24 +18,28 @@ module.exports = {
             if (userSession) {
                 const userData = await User.findOne({ email: userSession });
                 const cartData = await Carts.find({ userId: userData._id });
-                console.log(cartData[0]);
+                const wishlistData = await Wishlist.find({ userId: userData._id });
+
                 if (cartData) {
                     count = cartData[0].product.length;
                 } else {
                     count = 0;
                 }
-                console.log(count);
+                if (wishlistData.length) {
+                    wishCount = wishlistData[0].product.length;
+                  } else {
+                    wishCount = 0;
+                  }
             }
 
-           const product= await Product.find({ status: true }, (err, product) => {
+            const product = await Product.find({ status: true }, (err, product) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log(product);
                     res.render("user/index", {
                         data: product,
                         sessionData: req.session.userEmail,
-                        count,
+                        count,wishCount
                     });
                 }
             });
@@ -103,29 +110,6 @@ module.exports = {
                 }
             });
         }
-
-        // try {
-        //   const password = req.body.password;
-        //   const cpassword = req.body.confirmPassword;
-        //   if (password === cpassword) {
-        //     const user = new User({
-        //       firstName: req.body.firstName,
-        //       lastName: req.body.lastName,
-        //       address: req.body.address,
-        //       email: req.body.email,
-        //       phone: req.body.phone,
-        //       password: password
-        //     })
-        //     await user.save()
-
-        //     res.status(201).render("user/login");
-        //   } else {
-        //     res.render("user/index");
-
-        //   }
-        // } catch (error) {
-        //   res.status(400).send(error);
-        // }
     },
     otpVerification: async (req, res) => {
         try {
@@ -150,25 +134,87 @@ module.exports = {
     },
     getUserProfile: async (req, res) => {
         try {
-            const userData = await User.findOne(
-                { email: req.session.userEmail },
-                (err, user) => {
-                    console.log(user);
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        res.render("user/userProfile", {
-                            data: user,
-                            sessionData: req.session.userEmail,
-                            count,
-                        });
-                    }
-                }
-            );
+            await User.findOne({ email: req.session.userEmail }).then((userData) => {
+                Address.find({ user_id: req.session.userEmail }).then((address) => {
+                    res.render("user/userProfile", { data: userData, sessionData: req.session.userEmail, count, address,wishCount })
+                })
+            });
+        } catch (error) {
+            console.log(error);
+
+        }
+    },
+    getAddAddress: (req, res) => {
+        try {
+            const sessionData = req.session.userEmail
+            res.render('user/addAddress', { sessionData, count ,wishCount})
         } catch (error) {
             console.log(error);
         }
     },
+    postAddAddress: async (req, res) => {
+        const uid = req.session.userEmail;
+        const addressDetails = await new Address({
+            user_id: uid,
+            address: req.body.address,
+            city: req.body.city,
+            district: req.body.district,
+            state: req.body.state,
+            pincode: req.body.pincode,
+        });
+        await addressDetails.save().then((results) => {
+            if (results) {
+                res.redirect('/checkout');
+            } else {
+                res.json({ status: false });
+            }
+        });
+    },
+    changePassword: (req, res) => {
+        try {
+            const sessionData = req.session.userEmail
+
+            res.render('user/changePassword', { sessionData, count ,wishCount})
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+    postChangePassword: async (req, res) => {
+        try {
+            const sessionData = req.session.userEmail;
+            const data = req.body;
+            const password = data.password
+            const newPassword = data.newPassword
+            const repeatPassword = data.repeatPassword
+            const userData = await User.findOne({ email: sessionData })    
+            console.log(`this is user data ${userData}`);
+            if (userData) {
+                if (userData.password === password) {
+                    console.log(userData.password, password);
+                    if (newPassword === repeatPassword) {
+                        await User.updateOne({ email: sessionData }, { $set: { password: password } }).then(() => {
+                            // req.session.destroy();
+                            res.redirect('/login')
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                    } else {
+                        res.render('user/changePassword', { err_message: 'new password and repeat password are not matching', sessionData, count ,wishCount})
+                    }
+                } else {
+                    res.render('user/changePassword', { err_message: 'current password are not matching', sessionData, count ,wishCount})
+                }
+            } else {
+                console.log('error');
+            }
+
+        } catch {
+            console.error();
+
+        }
+    },
+
     getProductDetails: async (req, res) => {
         try {
             const id = req.query.id;
@@ -178,7 +224,7 @@ module.exports = {
                 res.render("user/productView", {
                     product,
                     sessionData: req.session.userEmail,
-                    count,
+                    count,wishCount
                 });
             } else {
                 res.redirect("/user/index");
@@ -221,16 +267,16 @@ module.exports = {
                 },
                 {
                     $addFields: {
-                      productPrice: {
-                        $sum: { $multiply: ['$productQuantity', '$productDetail.price'] },
-                      },
+                        productPrice: {
+                            $sum: { $multiply: ['$productQuantity', '$productDetail.price'] },
+                        },
                     },
                 },
             ]);
-            
+
             const sum = cart.reduce((accumulator, object) => accumulator + object.productPrice, 0);
-            console.log(sum);
-            res.render("user/cart", {cart, userData, sessionData: req.session.userEmail,count,sum});
+
+            res.render("user/cart", { cart, userData, sessionData: req.session.userEmail, count, sum,wishCount });
         } catch (error) {
             console.log(error.message);
         }
@@ -242,7 +288,7 @@ module.exports = {
         const userData = await User.findOne({ email: userId });
         const objId = mongoose.Types.ObjectId(id);
         const idUser = mongoose.Types.ObjectId(userData._id);
-        console.log(userId);
+
         let proObj = {
             productId: objId,
             quantity: 1,
@@ -284,6 +330,120 @@ module.exports = {
             res.json({ stock: true });
         }
     },
+    getWishlist: async (req, res) => {
+        try {
+            const sessionData = req.session.userEmail
+            const userData = await User.findOne({ email: sessionData });
+            const userId = mongoose.Types.ObjectId(userData._id);
+            const cartData = await Carts.findOne({ userId: userData.id });
+            const wishlistDetails = await Wishlist.findOne({ userId: userData._id });
+            wishCount = wishlistDetails?.product?.length;
+            if (wishlistDetails == null) {
+                wishCount = 0;
+            }
+            const wishlistData = await Wishlist.aggregate([
+                {
+                  $match: { userId: userId },
+                },
+                {
+                  $unwind: "$product",
+                },
+                {
+                  $project: {
+                    productItem: "$product.productId",
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "products",
+                    localField: "productItem",
+                    foreignField: "_id",
+                    as: "productDetail",
+                  },
+                },
+                {
+                  $project: {
+                    productItem: 1,
+                    productDetail: { $arrayElemAt: ["$productDetail", 0] },
+                  },
+                },
+              ]);
+              res.render("user/wishlist", { sessionData, count, wishlistData, wishCount });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    addToWishlist: async (req, res) => {
+        try {
+            const sessionData = req.session.userEmail
+            const id = req.params.id
+            const objId = mongoose.Types.ObjectId(id);
+            let proObj = {
+                productId: objId,
+            };
+
+            const userData = await User.findOne({ email: sessionData });
+            const userId = mongoose.Types.ObjectId(userData._id);
+            const userWishlist = await Wishlist.findOne({ userId: userId });
+            const verify = await Carts.findOne(
+                { userId: userId },
+                { product: { $elemMatch: { productId: objId } } }
+            );
+            if (userWishlist) {
+                let proExist = userWishlist.product.findIndex(
+                    (product) => product.productId == id
+                );
+                if (proExist != -1) {
+                    res.json({ productExist: true });
+                } else {
+                    Wishlist
+                        .updateOne({ userId: userId }, { $push: { product: proObj } })
+                        .then(() => {
+                            res.json({ status: true });
+                        });
+                }
+            } else {
+                Wishlist
+                    .create({
+                        userId: userId,
+                        product: [
+                            {
+                                productId: objId,
+                            },
+                        ],
+                    })
+                    .then(() => {
+                        res.json({ status: true });
+                    });
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    removewishlistProduct:async (req, res) =>{
+        try {
+            const data = req.body;
+            const objId = mongoose.Types.ObjectId(data.productId);
+            await Wishlist.aggregate([
+              {
+                $unwind: "$product",
+              },
+            ]);
+            await Wishlist
+              .updateOne(
+                { _id: data.wishlistId, "product.productId": objId },
+                { $pull: { product: { productId: objId } } }
+              )
+              .then(() => {
+                res.json({ status: true });
+              });
+          } catch {
+            console.error();
+           
+          }
+    },
     removeProduct: async (req, res) => {
         console.log("api called");
         const data = req.body;
@@ -301,15 +461,18 @@ module.exports = {
         });
     },
     changeQuantity: async (req, res, next) => {
+        console.log('api called');
         const data = req.body
+        console.log(data);
         data.count = Number(data.count)
         data.quantity = Number(data.quantity)
         const objId = mongoose.Types.ObjectId(data.product)
         const productDetail = await Product.findOne({ _id: data.product })
-        console.log(data);
-        if ((data.count == -1 && data.quantity == 1) ) {
+        console.log(objId);
+        console.log(productDetail);
+        if ((data.count == -1 && data.quantity == 1)) {
             res.json({ quantity: true })
-        }else if((data.count == 1 && data.quantity == productDetail.quantity)){
+        } else if ((data.count == 1 && data.quantity == productDetail.quantity)) {
             res.json({ stock: true });
         } else {
             await Carts
@@ -331,8 +494,54 @@ module.exports = {
                 });
         }
     },
-    getCheckout: (req,res)=>{
-        
-        res.render('user/checkout',{sessionData: req.session.userEmail,count})
+    getCheckout: async (req, res) => {
+        try {
+            const userId = req.session.userEmail;
+            const userData = await User.findOne({ email: userId });
+            const cart = await Carts.aggregate([
+                {
+                    $match: { userId: userData._id },
+                },
+                {
+                    $unwind: "$product",
+                },
+                {
+                    $project: {
+                        productItem: "$product.productId",
+                        productQuantity: "$product.quantity",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "productItem",
+                        foreignField: "_id",
+                        as: "productDetail",
+                    },
+                },
+                {
+                    $project: {
+                        productItem: 1,
+                        productQuantity: 1,
+                        productDetail: { $arrayElemAt: ["$productDetail", 0] },
+                    },
+                },
+                {
+                    $addFields: {
+                        productPrice: {
+                            $sum: { $multiply: ['$productQuantity', '$productDetail.price'] },
+                        },
+                    },
+                },
+            ]);
+            const sum = cart.reduce((accumulator, object) => accumulator + object.productPrice, 0);
+            Address.find({ user_id: userId }).then((address) => {
+                res.render('user/checkout', { cart,wishCount, sessionData: req.session.userEmail, count, sum, address });
+            })
+        } catch (error) {
+            console.log(error);
+        }
+
+
     }
 };

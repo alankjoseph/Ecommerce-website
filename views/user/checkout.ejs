@@ -18,155 +18,142 @@
     <%- include('../partials/userNav.ejs') %>
         <div class="container">
             <div class="row pt-5">
-                <div class="col-md-8 mb-4">
+                <div class="col-md-12 col-lg-8 mb-4">
                     <div class="card mb-4">
-                        <div class="card-header py-3">
-                            <h5 class="mb-0">Biling details</h5>
-                        </div>
-                        <div class="card-body">
-                            <form id="checkout">
+                        <form id="checkout">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Shipping Address</h5>
+                            </div>
+                            <div class="card-body">
                                 <!-- Text input -->
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example3">House Name</label>
-                                    <input type="text" id="housename" name="housename" class="form-control" />
+                                <div class=" text-dark  border-secondary">
+                                    <div class="p-5">
+                                        <div class="shipadrss col-md-12 ">
+                                            <% address.forEach(data=> { %>
+                                            <div style="border: 1px rgba(99, 94, 94, 0.233) solid"
+                                                class="p-4 d-flex align-content-center align-items-center d9">
+                                                <input type="radio" value="<%= data._id %>" name="address" required
+                                                    checked />
+                                                <p class="ms-3"><br />
+                                                    <%= data.address %> <br>
+                                                    <%= data.state %>,
+                                                    <%= data.city %> <br>
+                                                    <%= data.pincode %>
+                                                </p>
+                                            </div>
+                                            <% }) %>
 
-                                    <p id="houseError" style="color: red"></p>
+                                            <div class="mt-3 d-flex align-items-center d9">
+                                                <a href="/addAddress" class="btn btn-light">+ Add New
+                                                    Address</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <!-- Text input -->
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example4">Area</label>
-                                    <input type="text" id="area" name="area" class="form-control" />
-
-                                    <p id="areaError" style="color: red"></p>
-                                </div>
-
-                                <!-- Email input -->
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example5">Landmark</label>
-                                    <input type="" id="landmark" name="landmark" class="form-control" />
-
-                                    <p id="landmarkError" style="color: red"></p>
-                                </div>
-
-                                <!-- Number input -->
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example6">City</label>
-                                    <input type="" id="city" name="city" class="form-control" />
-
-                                    <p id="cityError" style="color: red"></p>
-                                </div>
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example6">State</label>
-                                    <input type="" id="state" name="state" class="form-control" />
-
-                                    <p id="stateError" style="color: red"></p>
-                                </div>
-                                <div class="form-outline mb-3">
-                                    <label class="form-label" for="form7Example6">Pincode</label>
-                                    <input type="" id="pincode" name="pincode" class="form-control" />
-
-                                    <p id="pincodeError" style="color: red"></p>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Use Permanent Address
-                                    </label>
-                                    <input class="form-check-input" type="checkbox" value="permanentAddress"
-                                        id="checkbox" name="checkbox" />
-
-                                </div>
-
-
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <div class="col-md-4 mb-4">
+                <div class="col-md-12 col-lg-4 mb-4">
                     <div class="card mb-4">
                         <div class="card-header py-3">
                             <h5 class="mb-0">Summary</h5>
                         </div>
+
                         <div class="card-body">
                             <ul class="list-group list-group-flush ">
-
+                                <% cart.forEach((product)=>{ %>
                                 <li
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                                    cannon
-                                    <span>Rs.6767</span>
+                                    <%= product.productQuantity %> x ₹ <%= product.productDetail.price %>
+                                            <span>Rs. <%= product.productPrice %></span>
                                 </li>
+                                <% }) %>
 
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    Shipping
-                                    <span>Free</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <h5 class="text-uppercase mb-5">Give code</h5>
-                                    <div>
-                                        <div class="form-outline mt-3">
-                                            <input type="text" id="coupon" class="form-control form-control-lg" />
-                                            <label class="form-label" for="coupon">Enter your code</label>
-                                        </div>
-                                        <div>
-                                            <button type="button" id="coupon"
-                                                class="btn btn-outline-none">Apply</button>
-                                        </div>
-                                    </div>
+
+
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
 
                                 </li>
                                 <li
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
+
+                                    Total
+                                    <span>Rs. <%=sum%></span>
+                                </li>
+
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <div class="form-outline mt-3">
+                                        <label for="coupon"><strong>Enter your coupon code here</strong></label>
+                                        <div class="input-group form-outline mt-2 mb-2">
+                                            <input type="text" class="form-control" placeholder="Enter here">
+                                            <div class="input-group-append ">
+                                                <button class="btn btn-dark " type="button">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                                     <div>
-                                        <strong>Discount Applied(Rs)</strong>
+                                        <strong>Discount Applied</strong>
                                     </div>
                                     <span id="discount"></span>
                                     <input type="hidden" name="coupon" id="dis">
                                     <input type="hidden" name="couponName" id="couponName">
+                                </li> -->
+                                <li class=" d-flex justify-content-between align-items-center px-0 py-1">
+                                    Shipping charge
+                                    <span>Free</span>
+                                </li>
+                                <li class=" d-flex justify-content-between align-items-center px-0 py-1">
+                                    Shipping charge
+                                    <span>Free</span>
                                 </li>
 
                                 <li
+                                    class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+
+                                    Tax (18% GST)
+                                    <span>Rs. <%=Math.round(sum*.18) %>.00</span>
+                                </li>
+                                <li
                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                                     <div>
-                                        <strong>Total Amount (Rs)</strong>
+                                        <strong>Total Amount </strong>
                                     </div>
-                                    <span id="total">43434</span>
+                                    <span id="total">Rs. <%=Math.round(sum*.18) + sum %>.00</span>
                                     <input type="hidden" name="total" id="final">
                                 </li>
                             </ul>
-                            <div class="custom-control custom-radio">
-                                <label class="custom-control-label" for="credit">COD</label>
-                                <input
-                                  id="credit"
-                                  name="paymentMethod"
-                                  type="radio"
-                                  value="COD"
-                                  class="custom-control-input"
-                                  checked
-                                  required
-                                />
-                                
-                              </div>
-                              <div class="custom-control custom-radio">
-                                <label class="custom-control-label" for="debit">Online payment</label>
-                                <input
-                                  id="debit"
-                                  name="paymentMethod"
-                                  type="radio"
-                                  value="Online"
-                                  class="custom-control-input"
-                                  required
-                                />
-                                
-                              </div>
-                              <div class="mt-3">
-                                <button
-                                  type="submit"
-                                  value="submit"
-                                  class="btn btn-success btn-lg btn-block float-end"
-                                >
-                                  Pay Now
-                                </button>
-                              </div>
+                            <div class="row ">
+                                <div class="col">
+                                    <div class="custom-control custom-radio">
+                                        <label class="custom-control-label " for="credit">COD</label>
+                                        <input id="credit" name="paymentMethod" type="radio" value="COD"
+                                            class="custom-control-input" checked required />
+
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <label class="custom-control-label" for="debit">Online payment</label>
+                                        <input id="debit" name="paymentMethod" type="radio" value="Online"
+                                            class="custom-control-input" required />
+
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mt-0">
+                                        <button type="submit" value="submit"
+                                            class="btn btn-success btn-lg btn-block float-end">
+                                            Pay Now
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </div>
                         </div>
                         </form>
                     </div>
