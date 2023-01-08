@@ -1,7 +1,8 @@
 const dotenv = require("dotenv");
 const User = require("../model/userSignup");
 const Category = require('../model/category')
-const Product = require('../model/product')
+const Product = require('../model/product');
+const { text } = require("express");
 dotenv.config();
 
 const adminDetails = {
@@ -73,7 +74,7 @@ module.exports = {
     insertCategory: async (req, res) => {
         try {
 
-            const categoryData = req.body.name;
+            const categoryData = req.body.name.toUpperCase();
             const allCategories = await Category.find();
             const verify = await Category.findOne({ name: categoryData });
             // let category = new Category({
@@ -84,7 +85,7 @@ module.exports = {
             // res.redirect('/admin/category');
             if (verify == null) {
                 const newCategory = new Category({
-                    name: req.body.name,
+                    name:  categoryData,
                     image: req.file.filename,
                 });
                 newCategory.save().then(() => {
