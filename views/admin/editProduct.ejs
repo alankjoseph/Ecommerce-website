@@ -40,18 +40,21 @@
                                         </div>
                                         <div class="form-outline mt-3">
                                             <label class="form-label" for="form3Example1">Category Name</label><br>
-                                            <select id="form3Example1" name="category" class="form-control " required="required">
+                                            <select id="form3Example1" name="category" class="form-control "  required="required">
                                                 
-                                                <option value="" disable selected hidden >--select--</option>
+                                                <option name="category" disable selected  ><%=product.category%></option>
                                                 <%category.forEach((item)=>{  %>
-                                                <option><%=item.name %></option>
+                                                <option name="category">
+                                                    <%=item.name %>
+                                                </option>
                                                 <% }) %>
                                             </select>
                                         </div>
 
                                         <div class="form-outline mt-3">
                                             <label class="form-label" for="form3Example1">Choose your image</label><br>
-                                            <input type="file" name="image" value="<%=product.image%>" class="form-control" />
+                                            <img src="/admin/img/<%=product.image%>" alt="" style="width: 5rem" />
+                                            <input type="file" name="image" value="/admin/img/<%=product.image%>" class="form-control" />
 
                                         </div>
                                         <div class="form-outline mt-3">

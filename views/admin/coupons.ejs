@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | User Management</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" />
+<body>
+    <%- include('../partials/adminNav.ejs') %>
+    <section>
+        <div class="container mt-5">
+            <h1>Coupons</h1>
+            <div class="d-flex justify-content-end mb-5">
+                <div>
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                        Add Coupon
+                    </button>
+                    <% if(locals.err_message){%>
+                        <div>
+                            <p class="text-danger">
+                                <%=err_message%>
+                            </p>
+                        </div>
+                        <%}%>
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">
+                                                Add Coupon
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form action="/admin/addCoupon" method="post">
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Coupon</label>
+                                                    <input type="text" class="form-control" id="coupon" name="coupon"
+                                                        aria-describedby="emailHelp" />
+                                                    <p id="couponError" style="color: red"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Discount(In
+                                                        percentage)</label>
+                                                    <input type="num" class="form-control" id="discount" name="discount"
+                                                        aria-describedby="emailHelp" />
+                                                    <p id="discountError" style="color: red"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Maximum Limit</label>
+                                                    <input type="number" class="form-control" id="max" name="max"
+                                                        aria-describedby="emailHelp" />
+                                                    <p id="maxError" style="color: red"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Expire Date</label>
+                                                    <input type="date" class="form-control" id="exdate" name="exdate"
+                                                        aria-describedby="emailHelp" />
+                                                    <p id="exdateError" style="color: red"></p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" value="submit" class="btn btn-outline-primary">
+                                                    submit
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+            </div>
+            <div class="container table-responsive">
+                <table id="example" class="table table-hover table-light text-start align-middle table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                Sl.No
+                            </th>
+                            <th class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                Coupon
+                            </th>
+                            <th class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                Expire Date
+                            </th>
+                            <th class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                Options
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% coupons.forEach((coupons,index)=>{ %>
+                            <tr>
+                                <td class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                    <%= index + 1 %>
+                                </td>
+                                <th class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                    <%= coupons.couponName %>
+                                </th>
+                                <td class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                    <%= coupons.expirationTime %>
+                                </td>
+                                <td class="col-3 col-md-3 col-lg-3 col-xl-1 text-center">
+                                    <button type="button" class="btn btn-outline-none" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop-<%= coupons._id %>">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <div class="modal fade" id="staticBackdrop-<%= coupons._id %>" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdrop-<%= coupons._id %>">
+                                                        Edit Coupon
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="/admin/editCoupon/<%= coupons._id %>" method="post">
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="exampleInputEmail1"
+                                                                class="form-label">Coupon</label>
+                                                            <input type="text" class="form-control" id="coupon"
+                                                                name="coupon" value="<%= coupons.couponName %>"
+                                                                aria-describedby="emailHelp" />
+                                                            <p id="couponNameError" style="color: red"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="exampleInputEmail1" class="form-label">Discount(In
+                                                                percentage)</label>
+                                                            <input type="num" class="form-control" id="discount"
+                                                                name="discount" value="<%= coupons.discount*100 %>"
+                                                                aria-describedby="emailHelp" />
+                                                            <p id="discountsError" style="color: red"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="exampleInputEmail1" class="form-label">Maximum
+                                                                Limit</label>
+                                                            <input type="number" class="form-control" id="max" name="max"
+                                                                value="<%= coupons.maxLimit %>"
+                                                                aria-describedby="emailHelp" />
+                                                            <p id="maxlError" style="color: red"></p>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="exampleInputEmail1" class="form-label">Expire
+                                                                Date</label>
+                                                            <input type="date" class="form-control" id="exdate"
+                                                                name="exdate" value="<%= coupons.expirationTime %>"
+                                                                aria-describedby="emailHelp" />
+                                                            <p id="expdateError" style="color: red"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-secondary"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button id="submit" type="submit" value="submit"
+                                                            class="btn btn-outline-primary">
+                                                            submit
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="" class="btn btn-outline-none" data-bs-toggle="modal"
+                                        data-bs-target="#static-<%= coupons._id %>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                            class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                        </svg>
+                                    </button>
+                                    <div class="modal fade" id="static-<%= coupons._id %>" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">
+                                                        Delete Coupon
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Want to delete <%= coupons.couponName %>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                        data-bs-dismiss="modal">
+                                                        Close
+                                                    </button>
+                                                    <a href="/admin/deleteCoupon/<%= coupons._id %>"><button type="button"
+                                                            class="btn btn-outline-primary">
+                                                            Confirm
+                                                        </button></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+<script>
+    $(document).ready(function () {
+      $("#example").DataTable();
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+  crossorigin="anonymous"></script>
+</body>
+
+</html>

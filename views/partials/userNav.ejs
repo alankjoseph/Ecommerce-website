@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-dark">
+<nav class="navbar navbar-expand-lg " style="background-color: rgba(41, 39, 39, 0.815);!important">
     <div class="container-fluid">
         <a class="navbar-brand text-light" href="/"> <strong>CamKart</strong> </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -49,18 +49,18 @@
                 <!-- <a href="/login"><button class="btn btn-primary text-light ">Login</button></a> -->
                 <div class="btn-group">
                     <% if (sessionData) {%>
-                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-                          <%= sessionData %>
-                        </button>
+                        <p class=" my-auto dropdown-toggle " data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" style="cursor: pointer;">
+                          <span class="text-light"><%= name %></span>
+                        </p>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
-                            <li><a class="dropdown-item " href="/userProfile">My Profile</a></li>
-                            <li><a class="dropdown-item " href="/cart">  <i class="fa-sharp fa-solid fa-cart-shopping"></i> Orders</a></li>
-                            <li><a class="dropdown-item " href="#"> <i class="fa-solid fa-heart"></i> Wishlist</a></li>
-                            <li><a class="dropdown-item " href="/logout">LogOut</a></li>
+                            <li><a class="dropdown-item " href="/userProfile"><i class="fa fa-user"></i> My Profile</a></li>
+                            <li><a class="dropdown-item " href="/orderDetails">  <i class="fa-sharp fa-solid fa-cart-shopping"></i> Orders</a></li>
+                            <li><a class="dropdown-item " href="/wishlist"> <i class="fa-solid fa-heart"></i> Wishlist</a></li>
+                            <li><a class="dropdown-item " href="/logout"><i class="fa fa-sign-out" ></i> LogOut</a></li>
                         </ul>
                         <% }else{%>
                         <a href="/login"><button class="btn btn-primary text-light  " >Login</button></a>
-                    <% } %>
+                        <% } %>
                     
                   </div>
                 

@@ -12,11 +12,21 @@
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
 </head>
+<style>
+    a {
+        text-decoration: none;
+    }
+</style>
 
 <body>
     <%- include('../partials/userNav.ejs') %>
         <div class="container">
+            <div class="mt-5">
+                <h6 class="mb-0"><a href="/cart" style="text-decoration: none;" class="text-body "><i
+                            class="fas fa-long-arrow-alt-left me-2"></i>Back to Cart</a></h6>
+            </div>
             <div class="row pt-5">
                 <div class="col-md-12 col-lg-6 mb-4">
                     <div class="card mb-4">
@@ -30,23 +40,23 @@
                                     <div class="p-5">
                                         <div class="shipadrss col-md-12 ">
                                             <% address.forEach(data=> { %>
-                                            <div style="border: 1px rgba(99, 94, 94, 0.233) solid"
-                                                class="p-4 d-flex align-content-center align-items-center d9">
-                                                <input type="radio" value="<%= data._id %>" name="address" required
-                                                    checked />
-                                                <p class="ms-3"><br />
-                                                    <%= data.address %> <br>
-                                                    <%= data.state %>,
-                                                    <%= data.city %> <br>
-                                                    <%= data.pincode %>
-                                                </p>
-                                            </div>
-                                            <% }) %>
+                                                <div style="border: 1px rgba(99, 94, 94, 0.233) solid"
+                                                    class="p-4 d-flex align-content-center align-items-center d9">
+                                                    <input type="radio" value="<%= data._id %>" name="address" required
+                                                        checked />
+                                                    <p class="ms-3"><br />
+                                                        <%= data.address %> <br>
+                                                            <%= data.state %>,
+                                                                <%= data.city %> <br>
+                                                                    <%= data.pincode %>
+                                                    </p>
+                                                </div>
+                                                <% }) %>
 
-                                            <div class="mt-3 d-flex align-items-center d9">
-                                                <a href="/addAddress" class="btn btn-light">+ Add New
-                                                    Address</a>
-                                            </div>
+                                                    <div class="mt-3 d-flex align-items-center d9">
+                                                        <a href="/addAddress" class="btn btn-light">+ Add New
+                                                            Address</a>
+                                                    </div>
                                         </div>
                                     </div>
                                 </div>
@@ -62,35 +72,17 @@
 
                         <div class="card-body">
                             <ul class="list-group list-group-flush ">
-                                <% cart.forEach((product)=>{ %>
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                                    <%= product.productQuantity %> x ₹ <%= product.productDetail.price %>
-                                            <span>Rs. <%= product.productPrice %></span>
-                                </li>
-                                <% }) %>
 
 
-
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
-
-                                </li>
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
-
-                                    Total
-                                    <span>Rs. <%=sum%></span>
-                                </li>
-
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                     <div class="form-outline mt-3">
                                         <label for="coupon"><strong>Enter your coupon code here</strong></label>
                                         <div class="input-group form-outline mt-2 mb-2">
-                                            <input type="text" class="form-control" placeholder="Enter here">
+                                            <input type="text" id="coupon" class="form-control"
+                                                placeholder="Enter here">
                                             <div class="input-group-append ">
-                                                <button class="btn btn-dark " type="button">Apply</button>
+                                                <button id="coupon" class="btn btn-dark " onclick="check()"
+                                                    type="button">Apply</button>
                                             </div>
                                         </div>
                                     </div>
@@ -104,18 +96,24 @@
                                     <input type="hidden" name="coupon" id="dis">
                                     <input type="hidden" name="couponName" id="couponName">
                                 </li> -->
+
+                                <li class=" d-flex justify-content-between align-items-center px-0 py-1">
+                                    Price
+                                    <span>Rs. <%=sum%></span>
+                                </li>
+
+                                <li class=" d-flex justify-content-between align-items-center px-0 py-1">
+                                    Discount
+                                    <span id="discount"></span>
+                                    <input type="hidden" name="coupon" id="dis">
+                                    <input type="hidden" name="couponName" id="couponName">
+                                </li>
                                 <li class=" d-flex justify-content-between align-items-center px-0 py-1">
                                     Shipping charge
                                     <span>Free</span>
                                 </li>
 
-                                <li class=" d-flex justify-content-between align-items-center px-0 py-1">
-                                    Discount
-                                    <span>Rs. 0.00</span>
-                                </li>
-                                
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
 
                                     Tax (18% GST)
                                     <span>Rs. <%=Math.round(sum*.18) %>.00</span>
@@ -125,7 +123,9 @@
                                     <div>
                                         <strong>Total Amount </strong>
                                     </div>
-                                    <span id="total" >Rs. <%=Math.round(sum*.18) + sum %>.00</span>
+                                    <span id="total">
+                                        <%=Math.round(sum*.18) + sum %>.00
+                                    </span>
                                     <input type="hidden" name="total" id="final">
                                 </li>
                             </ul>
@@ -138,12 +138,13 @@
 
                                     </div>
                                     <div class="custom-control custom-radio">
-                                        <label class="custom-control-label" for="debit">Online payment</label>
+                                        <label class="custom-control-label" for="debit">Online</label>
                                         <input id="debit" name="paymentMethod" type="radio" value="Online"
                                             class="custom-control-input" required />
 
                                     </div>
                                 </div>
+                                
                                 <div class="col">
                                     <div class="mt-0">
                                         <button type="submit" value="submit"
@@ -162,45 +163,95 @@
             </div>
         </div>
         <script>
-           $("#checkout").submit((e) => {
-              e.preventDefault();
-              Swal.fire({
-                title: 'Confirm?',
-                text: "Click confirm to proceed with your order",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirm'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Order Confirmed',
-                  }).then(() => {
-                    $.ajax({
-                      url: "/placeOrder",
-                      method: "post",
-                      data: $("#checkout").serialize(),
-                      success: (response) => {
-                        console.log(response);
-                        if (response[0].success) {
-                          location.href = `/`;
-                        } else {
-                        //   razorPay(response[0].orders);
-                          console.log(response[0].orders)
-                        }
-                      },
-                    });
-                  })
-                }
-              })
+            $("#checkout").submit((e) => {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Confirm?',
+                    text: "Click confirm to proceed with your order",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Confirmed',
+                        }).then(() => {
+                            $.ajax({
+                                url: "/placeOrder",
+                                method: "post",
+                                data: $("#checkout").serialize(),
+                                success: (response) => {
+                                    console.log(response);
+                                    if (response.successCod) {
+                                        location.href = `/orderSuccess`;
+                                        
+                                    } else if(response.successPay){
+                                        location.href = `/pay`;
+                                    }
+                                },
+                            });
+                        })
+                    }
+                })
             });
+
+            function check() {
+                let coupon = document.getElementById("coupon").value;
+                let total = document.getElementById("total").innerHTML;
+                console.log(coupon);
+                $.ajax({
+                    url: '/checkCoupon',
+                    data: {
+                        coupon,
+                        total
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        console.log(response);
+                        if (response.user) {
+                            Swal.fire({
+                                title: "Coupon already used!",
+                                icon: "error",
+                                confirmButtonText: "continue",
+                            })
+                        } else if (response.coupons) {
+                            Swal.fire({
+                                title: "Coupon Applied!",
+                                icon: "success",
+                                confirmButtonText: "continue",
+                            }).then(() => {
+                                console.log(response);
+                                document.getElementById("discount").innerHTML = response.discountAmount;
+                                document.getElementById("dis").value = response.discountAmount;
+                                document.getElementById("couponName").value = response.couponName;
+                                document.getElementById("total").innerHTML = total - response.discountAmount;
+                                document.getElementById("final").value = total - response.discountAmount;
+                            })
+
+                        } else if (response.invalid) {
+                            Swal.fire({
+                                title: "invalid coupon code!",
+                                icon: "error",
+                                confirmButtonText: "continue",
+                            })
+                        } else if (response.purchase) {
+                            Swal.fire({
+                                title: "Minimum purchase 100!",
+                                icon: "error",
+                                confirmButtonText: "continue",
+                            })
+                        }
+                    }
+                })
+            }
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"></script>
-      
+
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="/user/js/main.js"></script>
 </body>

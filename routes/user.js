@@ -35,4 +35,12 @@ router.post("/removewishlistProduct",sessionMV.verifyLoginUser,userController.re
 
 router.get('/checkout', sessionMV.verifyLoginUser, userController.getCheckout)
 router.post('/placeOrder',sessionMV.verifyLoginUser,userController.placeOrder)
+router.get("/pay",userController.getPay)
+router.get('/orderDetails',sessionMV.verifyLoginUser,userController.orderDetails)
+router.get("/orderSuccess",sessionMV.verifyLoginUser, userController.orderSuccess );
+router.get("/viewOrderProducts/:id",sessionMV.verifyLoginUser,userController.viewOrderProducts);
+router.get("/cancelOrder/:id",sessionMV.verifyLoginUser,userController.cancelOrder);
+router.post("/checkCoupon", sessionMV.verifyLoginUser, userController.checkCoupon);
+router.get("/success",userController.getSuccess)
+router.get("/cancel",userController.getCancel)
 module.exports = router;

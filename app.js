@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+const cors = require('cors');
 const sessions = require("express-session");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -19,7 +20,12 @@ dbconnect.dbconnect()
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+const corsOptions ={
+  origin:'http://localhost:3000', 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 app.use(express.static("public"));
 app.use("/img", express.static(path.join(__dirname + "public/user/img")));
 app.use("/products",express.static(path.join(__dirname + "public/admin/products")));

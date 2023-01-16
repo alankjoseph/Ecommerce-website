@@ -12,10 +12,60 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
     integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
 
-<body>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <!-- Css Styles -->
+  <!-- <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+  <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+  <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+  <link rel="stylesheet" href="css/slicknav.min.css" type="text/css"> -->
+  <!-- <link rel="stylesheet" href="css/style.css" type="text/css"> -->
+
+  <!-- <link rel="stylesheet" href="assets/css/vendor/vendor.min.css">
+  <link rel="stylesheet" href="assets/css/plugins/plugins.min.css">
+  <link rel="stylesheet" href="assets/css/style.min.css"> -->
+</head>
+<style>
+  a {
+    text-decoration: none;
+  }
+</style>
+
+<body style="background-color: rgba(199, 199, 207, 0.432);">
   <%- include('../partials/userNav.ejs') %>
+    <section class="mt-4 col-sm-12 mt-5 mt-sm-0">
+      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="/user/img/banner1.jpg" class="d-block " style=" width: 100%; " alt="...">
+          </div>
+          <div class="carousel-item">
+            <img src="/user/img/banner2.jpg" class="d-block " style=" width: 100%; " alt="...">
+          </div>
+          <!-- <div class="carousel-item">
+                <img src="/user/img/carousal2.jpg" class="d-block w-100" alt="...">
+            </div> -->
+
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+    </section>
     <main>
       <div>
         <div class="container">
@@ -24,7 +74,8 @@
           <div class="row row-pb-md pt-4">
             <% data.forEach(function(product){ %>
               <div class="col-lg-3 col-md-6 mb-4 text-center ">
-                <div class="product-entry p-3  card h-100" style="height: 300px;">
+                <div class="product-entry p-3 shadow bg-white rounded  card h-100"
+                  style="height : 300px ; background-color: rgb(250, 248, 248) !important;">
                   <div class="text-end">
                     <span class="text-danger" id="<%= product._id %>"></span>
                     <button id="wishButton" class="btn btn-outline-none" onclick="addToWishlist('<%= product._id %>')">
@@ -59,20 +110,14 @@
                       </svg>
                     </button>
                   </div>
-                  <div class="" style="height: 160px;">
+                  <div class="" style="height: 160px !important;">
                     <a href="/productDetails?id=<%=product._id%>" class="prod-img">
-                      <img src="/admin/img/<%=product.image%>" style="width: auto; max-height: 140px;" class="img-fluid"
-                        alt="">
+                      <img src="/admin/img/<%=product.image%>"
+                        style="width: auto  !important; max-height: 140px !important;" class="img-fluid" alt="">
                     </a>
                   </div>
-                  <div class="col-sm-12 col-lg-3  text-center mt-2">
-                    <!-- <p class="addtocart"><a href="/addToCart/" class="btn btn-dark btn-addtocart mx-2 "
-                            style="width: 140px;"> <i class="fa-solid fa-cart-plus"></i> Add to
-                            Cart</a></p> -->
-                    <button id="cartButton" class="btn btn-light btn-addtocart mx-2 " style="width: 140px;" onclick="addToCart('<%= product._id %>')"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
 
-                  </div>
-                  <div class="desc mt-2">
+                  <div class="desc mt-2 " style="height:110px ;">
                     <a href="/productDetails" style="text-decoration: none; color: black;">
                       <%=product.name%>
                     </a>
@@ -80,9 +125,19 @@
                     <h6 class="price  mt-2">₹ <%=product.price%>
                     </h6>
                   </div>
-                
-                    
-                  
+                  <div class="col-sm-12 col-lg-3  text-center mt-2">
+                    <!-- <p class="addtocart"><a href="/addToCart/" class="btn btn-dark btn-addtocart mx-2 "
+                            style="width: 140px;"> <i class="fa-solid fa-cart-plus"></i> Add to
+                            Cart</a></p> -->
+                    <button id="cartButton" class="btn  btn-addtocart mx-2  "
+                      style="width: 140px; background-color: rgb(202, 202, 214);"
+                      onclick="addToCart('<%= product._id %>')"><i class="fa-solid fa-cart-plus"></i> Add to
+                      Cart</button>
+
+                  </div>
+
+
+
                 </div>
               </div>
               <% }) %>
@@ -101,6 +156,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/user/js/main.js"></script>
+
+
+    <!-- <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/jquery.countdown.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>
+    <script src="js/main.js"></script> -->
+    <!-- <script src="assets/js/vendor/vendor.min.js"></script>
+    <script src="assets/js/plugins/plugins.min.js"></script> -->
+
+    <!-- Main JS -->
+    <!-- <script src="assets/js/main.js"></script> -->
 </body>
 
 </html>
