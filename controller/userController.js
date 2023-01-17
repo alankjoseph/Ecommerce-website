@@ -15,8 +15,8 @@ dotenv.config();
 
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AawABeIk29bD2svmalAWPYx1tBoUP8WXE6JrhC_duHWf6xpEOmXCxmfhjztXQabCUtOn7rYSJDF-1xMK',
-    'client_secret': 'EFH3pYl2UQf9-N-z9GPiANEGDyp2OrgExBvcFFlxjFx1zDzIJhkVy2iMWh7VWx3lhU8AbXfddOZF07DO'
+    'client_id': process.env.client_id,
+    'client_secret': process.env.client_secret
 });
 let count;
 let wishCount
@@ -782,7 +782,7 @@ module.exports = {
                             {
                                 name: "Red Sox Hat",
                                 sku: "001",
-                                price: "25.00",
+                                price: "27.00",
                                 currency: "USD",
                                 quantity: 1,
                             },
@@ -790,7 +790,7 @@ module.exports = {
                     },
                     amount: {
                         currency: "USD",
-                        total: "25.00",
+                        total: "27.00",
                     },
                     description: "Hat for the best team ever",
                 },
@@ -818,7 +818,7 @@ module.exports = {
                 {
                     amount: {
                         currency: "USD",
-                        total: "25.00",
+                        total: "27.00",
                     },
                 },
             ],
@@ -833,7 +833,7 @@ module.exports = {
                     throw error;
                 } else {
                     console.log(JSON.stringify(payment));
-                    res.send("Success");
+                    res.redirect("/orderSuccess");
                 }
             }
         );
