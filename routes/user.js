@@ -12,6 +12,7 @@ router.post('/otp', userController.otpVerification);
 router.post('/signup', userController.postSignup)
 router.get('/logout', sessionMV.verifyLoginUser, userController.getLogout)
 
+router.get('/error',userController.getError)
 
 router.get('/userProfile',sessionMV.verifyLoginUser, userController.getUserProfile)
 router.get('/addAddress', userController.getAddAddress)

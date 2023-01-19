@@ -21,7 +21,11 @@
                 </li>
 
                 <li class="nav-item">
+                    <% if (sessionData) {%>
                     <a class="nav-link text-light" href="/wishlist">Wishlist <span class="badge text-bg-secondary" id="wishlistCount"><%= wishCount %></span></a>
+                    <% }else{%>
+                        <a class="nav-link text-light" href="/wishlist">Wishlist </a>
+                        <% } %>
                 </li>
                 <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown"

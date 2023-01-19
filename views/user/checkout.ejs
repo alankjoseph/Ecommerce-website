@@ -104,7 +104,7 @@
 
                                 <li class=" d-flex justify-content-between align-items-center px-0 py-1">
                                     Discount
-                                    <span id="discount"></span>
+                                    <span id="discount" name="discount"></span>
                                     <input type="hidden" name="coupon" id="dis">
                                     <input type="hidden" name="couponName" id="couponName">
                                 </li>
@@ -201,12 +201,14 @@
             function check() {
                 let coupon = document.getElementById("coupon").value;
                 let total = document.getElementById("total").innerHTML;
+               
                 console.log(coupon);
                 $.ajax({
                     url: '/checkCoupon',
                     data: {
                         coupon,
-                        total
+                        total,
+
                     },
                     method: 'post',
                     success: (response) => {

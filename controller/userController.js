@@ -8,6 +8,7 @@ const Address = require('../model/address')
 const Wishlist = require('../model/wishlist')
 const Coupon = require('../model/coupon')
 const Order = require('../model/order')
+const Banners = require('../model/banner');
 const dotenv = require("dotenv");
 const { name } = require("ejs");
 const paypal = require("paypal-rest-sdk")
@@ -20,11 +21,13 @@ paypal.configure({
 });
 let count;
 let wishCount
+let amount
 module.exports = {
     getHome: async (req, res) => {
         try {
             let userSession = req.session.userEmail;
             let fname;
+            const banners = await Banners.find();
             if (userSession) {
                 const userData = await User.findOne({ email: userSession });
                 fname = userData.firstName
@@ -43,7 +46,7 @@ module.exports = {
                 }
             }
 
-            const product = await Product.find({ status: true }, (err, product) => {
+            await Product.find({},(err, product) => {
                 if (err) {
                     console.log(err);
                 } else {
@@ -51,12 +54,13 @@ module.exports = {
                         name: fname,
                         data: product,
                         sessionData: req.session.userEmail,
-                        count, wishCount
+                        count, wishCount,banners
                     });
                 }
             });
         } catch (error) {
             console.log(error);
+
         }
     },
     getLogin: (req, res) => {
@@ -64,10 +68,15 @@ module.exports = {
             res.render("user/login");
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
-        
+
+    },
+    getError: (req, res) => {
+        res.render('user/error')
     },
     getSignUp: (req, res) => {
+        
         res.render("user/signup");
     },
     postLogin: async (req, res) => {
@@ -96,7 +105,7 @@ module.exports = {
                 res.render("user/login", { message: "Invalid login details" });
             }
         } catch (error) {
-            res.status(400).send(error);
+            res.redirect('/error')
             console.log("error");
         }
     },
@@ -143,6 +152,7 @@ module.exports = {
             }
         } catch (err) {
             console.log(err);
+            res.redirect('/error')
         }
     },
     getLogout: async (req, res) => {
@@ -159,6 +169,7 @@ module.exports = {
             });
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
 
         }
     },
@@ -171,10 +182,12 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
     },
     postAddAddress: async (req, res) => {
-        const uid = req.session.userEmail;
+        try {
+            const uid = req.session.userEmail;
         const addressDetails = await new Address({
             user_id: uid,
             address: req.body.address,
@@ -190,6 +203,11 @@ module.exports = {
                 res.json({ status: false });
             }
         });
+        } catch (error) {
+            console.log(error);
+            res.redirect('/error')
+        }
+        
     },
     changePassword: async (req, res) => {
         try {
@@ -201,6 +219,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
 
     },
@@ -238,6 +257,7 @@ module.exports = {
 
         } catch {
             console.error();
+            res.redirect('/error')
 
         }
     },
@@ -250,7 +270,7 @@ module.exports = {
 
         } catch {
             console.error();
-
+            res.redirect('/error')
         }
     },
     postEditProfile: async (req, res) => {
@@ -273,6 +293,7 @@ module.exports = {
             res.redirect("/userProfile");
         } catch {
             console.error();
+            res.redirect('/error')
         }
     },
 
@@ -295,6 +316,7 @@ module.exports = {
             }
         } catch (error) {
             console.log(error.message);
+            res.redirect('/error')
         }
     },
     getCart: async (req, res) => {
@@ -354,11 +376,13 @@ module.exports = {
 
             res.render("user/cart", { cart, name: fname, userData, sessionData: req.session.userEmail, count, sum, wishCount });
         } catch (error) {
+            res.redirect('/error')
             console.log(error.message);
         }
     },
     addToCart: async (req, res) => {
-        let fname
+        try {
+            let fname
         const id = req.params.id;
         const userId = req.session.userEmail;
         const data = await Product.findOne({ _id: id });
@@ -412,6 +436,11 @@ module.exports = {
             console.log("2");
             res.json({ stock: true });
         }
+        } catch (error) {
+            res.redirect('/error')
+            console.log(error.message);
+        }
+        
     },
     getWishlist: async (req, res) => {
         try {
@@ -456,6 +485,7 @@ module.exports = {
             res.render("user/wishlist", { sessionData, count, name: fname, wishlistData, wishCount });
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
     },
     addToWishlist: async (req, res) => {
@@ -505,6 +535,7 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
     },
     removewishlistProduct: async (req, res) => {
@@ -526,27 +557,34 @@ module.exports = {
                 });
         } catch {
             console.error();
-
+            res.redirect('/error')
         }
     },
     removeProduct: async (req, res) => {
-        console.log("api called");
-        const data = req.body;
-        const objId = mongoose.Types.ObjectId(data.product);
-        await Carts.aggregate([
-            {
-                $unwind: "$product",
-            },
-        ]);
-        await Carts.updateOne(
-            { _id: data.cart, "product.productId": objId },
-            { $pull: { product: { productId: objId } } }
-        ).then(() => {
-            res.json({ status: true });
-        });
+        try {
+            console.log("api called");
+            const data = req.body;
+            const objId = mongoose.Types.ObjectId(data.product);
+            await Carts.aggregate([
+                {
+                    $unwind: "$product",
+                },
+            ]);
+            await Carts.updateOne(
+                { _id: data.cart, "product.productId": objId },
+                { $pull: { product: { productId: objId } } }
+            ).then(() => {
+                res.json({ status: true });
+            }); 
+        } catch (error) {
+            console.error();
+            res.redirect('/error')
+        }
+        
     },
     changeQuantity: async (req, res, next) => {
-        console.log('api called');
+        try {
+            console.log('api called');
         const data = req.body
         console.log(data);
         data.count = Number(data.count)
@@ -578,6 +616,11 @@ module.exports = {
                         });
                 });
         }
+        } catch (error) {
+            console.error();
+            res.redirect('/error')
+        }
+        
     },
     getCheckout: async (req, res) => {
         try {
@@ -628,6 +671,7 @@ module.exports = {
             })
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
 
 
@@ -635,7 +679,10 @@ module.exports = {
     placeOrder: async (req, res) => {
         try {
             const sessionData = req.session.userEmail
+            
+            
             const data = req.body
+           
             const address = data.address
             const payment = data.paymentMethod
             const userData = await User.findOne({ email: sessionData });
@@ -682,6 +729,7 @@ module.exports = {
                 const sum = productData.reduce((accumulator, object) => {
                     return accumulator + object.productPrice
                 }, 0);
+
                 sumTotal = sum
                 console.log(sum);
                 count = productData.length;
@@ -700,6 +748,8 @@ module.exports = {
                         paymentMethod: payment,
                         expectedDelivery: moment().add(4, 'days').format('MMM Do YY'),
                     });
+                    
+
                     order.save().then((done) => {
 
 
@@ -709,7 +759,9 @@ module.exports = {
                             if (payment === 'COD') {
                                 res.json({ successCod: true });
                             } else if (payment === 'Online') {
-                                res.json({successPay:true})
+                                 amount = Math.round(done.finalAmount / 84)
+                                console.log(amount);
+                                res.json({ successPay: true })
                                 // const create_payment_json = {
                                 //     intent: "sale",
                                 //     payer: {
@@ -762,18 +814,20 @@ module.exports = {
 
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
     },
     getPay: async (req, res) => {
         
+
         const create_payment_json = {
             intent: "sale",
             payer: {
                 payment_method: "paypal",
             },
             redirect_urls: {
-                return_url: "http://localhost:3000/success",
-                cancel_url: "http://localhost:3000/cancel",
+                return_url: "https://camkart.online/success",
+                cancel_url: "https://camkart.online/cancel",
             },
             transactions: [
                 {
@@ -782,7 +836,7 @@ module.exports = {
                             {
                                 name: "Red Sox Hat",
                                 sku: "001",
-                                price: "27.00",
+                                price: amount,
                                 currency: "USD",
                                 quantity: 1,
                             },
@@ -790,7 +844,7 @@ module.exports = {
                     },
                     amount: {
                         currency: "USD",
-                        total: "27.00",
+                        total: amount,
                     },
                     description: "Hat for the best team ever",
                 },
@@ -809,6 +863,7 @@ module.exports = {
         });
     },
     getSuccess: async (req, res) => {
+
         const payerId = req.query.PayerID;
         const paymentId = req.query.paymentId;
 
@@ -818,7 +873,7 @@ module.exports = {
                 {
                     amount: {
                         currency: "USD",
-                        total: "27.00",
+                        total: amount,
                     },
                 },
             ],
@@ -832,6 +887,7 @@ module.exports = {
                     console.log(error.response);
                     throw error;
                 } else {
+
                     console.log(JSON.stringify(payment));
                     res.redirect("/orderSuccess");
                 }
@@ -852,6 +908,7 @@ module.exports = {
 
         } catch {
             console.error();
+            res.redirect('/error')
         }
     },
     viewOrderProducts: async (req, res) => {
@@ -928,7 +985,7 @@ module.exports = {
                 });
         } catch {
             console.error();
-            res.render("user/error500");
+            res.redirect('/error')
         }
     },
     orderDetails: async (req, res) => {
@@ -962,10 +1019,12 @@ module.exports = {
                 });
         } catch (error) {
             console.log(error);
+            res.redirect('/error')
         }
     },
     checkCoupon: async (req, res) => {
-        const data = req.body;
+        try {
+            const data = req.body;
         console.log(data);
         const total = parseInt(data.total);
         const sessionData = req.session.userEmail;
@@ -1012,6 +1071,11 @@ module.exports = {
         } else {
             res.json({ exist: true });
         }
+        } catch (error) {
+            console.log(error);
+            res.redirect('/error')  
+        }
+        
     },
     cancelOrder: async (req, res) => {
         try {
@@ -1062,6 +1126,7 @@ module.exports = {
                 });
         } catch {
             console.error();
+            res.redirect('/error')  
 
         }
     },

@@ -8,6 +8,7 @@ const coupon = require("../model/coupon");
 const Order = require("../model/order");
 const Banner = require("../model/banner")
 const moment = require('moment');
+const Banners = require("../model/banner");
 dotenv.config();
 
 const adminDetails = {
@@ -59,7 +60,7 @@ module.exports = {
             const delivered = deliveredOrder.length;
             const cancelledOrder = await Order.find({ orderStatus: "Cancelled" });
             const cancelled = cancelledOrder.length;
-            
+
 
 
             res.render("admin/adminHome", {
@@ -574,7 +575,48 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
+    getBanner: async (req, res) => {
+        try {
+            const banner = await Banner.find();
+            res.render('admin/banner', { banner });
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    getAddBanner: (req, res) => {
+        res.render('admin/addBanner');
+    },
+    postAddBanner : async (req, res) => {
+        try {
+          console.log(req.body);
+          const Banner = new Banners({
+            name: req.body.Name,
+          });
+          console.log(req.files);
+          Banner.image = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+          const bannerData = await Banner.save();
+          if (bannerData) {
+            res.redirect('/admin/banner');
+          } else {
+            res.render('admin/addBanner');
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      },
+       getDeleteBanner : async (req, res) => {
+        try {
+          const { id } = req.params;
+          console.log(id);
+          await Banners.deleteOne({ _id: id }).then(() => {
+            res.redirect('/admin/banner');
+          });
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+
 
 };
 

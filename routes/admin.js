@@ -34,6 +34,11 @@ router.post('/orderCompleted',  adminController.orderCompeleted);
 router.post('/orderCancel',  adminController.orderCancel);
 router.get('/salesReport', adminController.getSalesReport);
 
+router.get('/banner',  adminController.getBanner);
+router.get('/addBanner', adminController.getAddBanner);
+router.post('/addBanner', upload.single('image'),  adminController.postAddBanner);
+router.get('/deleteBanner/:id',  adminController.getDeleteBanner);
+
 
 module.exports = router;
 

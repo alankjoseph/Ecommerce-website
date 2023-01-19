@@ -49,6 +49,9 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRouter);
 app.use("/", userRouter);
+app.use('*',(req,res)=>{
+  res.redirect('/error')
+})
 
 app.listen(PORT, () => {
   console.log(`server running on http://localhost:${PORT} `);
