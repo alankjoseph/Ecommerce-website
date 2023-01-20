@@ -1,5 +1,5 @@
 const dotenv = require("dotenv");
-const User = require("../model/userSignup");
+const User = require("../model/userSignup"); 
 const Category = require('../model/category')
 const Product = require('../model/product');
 const Coupon = require('../model/coupon')
@@ -605,9 +605,9 @@ module.exports = {
           console.log(req.body);
           const Banner = new Banners({
             name: req.body.Name,
+            image: req.file.filename
           });
-          console.log(req.files);
-          Banner.image = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+          
           const bannerData = await Banner.save();
           if (bannerData) {
             res.redirect('/admin/banner');
