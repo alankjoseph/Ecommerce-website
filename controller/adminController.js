@@ -13,8 +13,8 @@ dotenv.config();
 
 const adminDetails = {
 
-    email: "admin@gmail.com",
-    password: "admin123",
+    email: process.env.admin_id,
+    password: process.env.admin_pass,
 };
 module.exports = {
     getLogin: (req, res) => {
