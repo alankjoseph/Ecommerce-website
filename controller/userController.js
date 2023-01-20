@@ -3,6 +3,7 @@ const moment = require("moment");
 const User = require("../model/userSignup");
 const mailer = require("../config/otp");
 const Product = require("../model/product");
+const Category = require('../model/category')
 const Carts = require("../model/carts");
 const Address = require('../model/address')
 const Wishlist = require('../model/wishlist')
@@ -45,16 +46,18 @@ module.exports = {
                     wishCount = 0;
                 }
             }
-
+            const Categories = await Category.find();
+            console.log(Categories);
             await Product.find({},(err, product) => {
                 if (err) {
                     console.log(err);
                 } else {
                     res.render("user/index", {
+
                         name: fname,
                         data: product,
                         sessionData: req.session.userEmail,
-                        count, wishCount,banners
+                        count, wishCount,banners,Categories
                     });
                 }
             });
@@ -62,6 +65,73 @@ module.exports = {
             console.log(error);
 
         }
+    },
+    getShop: async(req,res) =>{
+        try {
+            let userSession = req.session.userEmail;
+            let fname;
+            const banners = await Banners.find();
+            if (userSession) {
+                const userData = await User.findOne({ email: userSession });
+                fname = userData.firstName
+                const cartData = await Carts.find({ userId: userData._id });
+                const wishlistData = await Wishlist.find({ userId: userData._id });
+
+                if (cartData.length) {
+                    count = cartData[0].product.length;
+                } else {
+                    count = 0;
+                }
+                if (wishlistData.length) {
+                    wishCount = wishlistData[0].product.length;
+                } else {
+                    wishCount = 0;
+                }
+            }
+            const Categories = await Category.find();
+            console.log(Categories);
+            await Product.find({},(err, product) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("user/shop", {
+
+                        name: fname,
+                        data: product,
+                        sessionData: req.session.userEmail,
+                        count, wishCount,banners,Categories
+                    });
+                }
+            });
+        } catch (error) {
+            console.log(error);
+
+        }
+    },
+    shopCategory: async (req,res)=>{
+        const id = req.params.id;
+        let fname;
+        let userSession = req.session.userEmail;
+        if(userSession){
+            const userData = await User.findOne({ email: userSession });
+            fname = userData.firstName
+        }
+        
+        const Categories = await Category.find();
+        const categoryData = await Category.findOne({ _id: id });
+        if(categoryData){
+            Product.find({category:categoryData.name}).then((allProducts)=>{
+                res.render('user/categories',{
+                    name: fname,
+                    data: allProducts,
+                    sessionData: req.session.userEmail,
+                    count, wishCount,Categories
+
+
+                })
+            })
+        }
+
     },
     getLogin: (req, res) => {
         try {
@@ -74,6 +144,9 @@ module.exports = {
     },
     getError: (req, res) => {
         res.render('user/error')
+    },
+    getError404:(req, res) => {
+        res.render('user/error404')
     },
     getSignUp: (req, res) => {
         

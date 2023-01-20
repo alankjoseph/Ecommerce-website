@@ -39,33 +39,48 @@
 
 <body style="background-color: rgba(199, 199, 207, 0.432);">
   <%- include('../partials/userNav.ejs') %>
-    <section class="mt-4 col-sm-12 mt-5 mt-sm-0">
-
-      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <% banners.forEach( ban=> { %>
-            <div class="carousel-item active">
-              <img src="/admin/img/<%= ban.image[0].filename %>" class="d-block " style=" width: 100%; " alt="...">
-            </div>
-
-            <% }) %>
-
-
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-          data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-          data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-
-    </section>
     
+    <div class="container">
+      <nav class="nav d-flex justify-content-center mt-5">
+        <div
+          class="nav nav-tabs justify-content-center"
+          id="nav-tab"
+          role="tablist"
+        >
+          <a class="text-decoration-none" href="/shop"
+            ><button
+              class="nav-link"
+              id="nav-home-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#nav-home"
+              type="button"
+              role="tab"
+              aria-controls="nav-home"
+              aria-selected="true"
+            >
+              All
+            </button></a
+          >
+  
+          <% Categories.forEach((category)=>{ %>
+          <a class="text-decoration-none" href="/categoryShop/<%= category._id %>"
+            ><button
+              class="nav-link"
+              id="nav-profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#nav-profile"
+              type="button"
+              role="tab"
+              aria-controls="nav-profile"
+              aria-selected="false"
+            >
+              <%= category.name %>
+            </button></a
+          >
+          <% }) %>
+        </div>
+      </nav>
+    </div>
     <main>
       <div>
         <div class="container">

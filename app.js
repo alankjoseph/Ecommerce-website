@@ -50,7 +50,7 @@ app.use((req, res, next) => {
 app.use("/admin", adminRouter);
 app.use("/", userRouter);
 app.use('*',(req,res)=>{
-  res.redirect('/error')
+  res.redirect('/error404')
 })
 
 app.listen(PORT, () => {

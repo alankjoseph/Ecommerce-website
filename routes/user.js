@@ -7,12 +7,16 @@ const sessionMV = require('../middleware/session')
 router.get("/", userController.getHome);
 router.get("/login", sessionMV.verifyLoginUserWithoutSession, userController.getLogin);
 router.get("/signup", userController.getSignUp);
+router.get('/shop',userController.getShop)
+router.get("/categoryShop/:id",userController.shopCategory);
+
 router.post('/login', userController.postLogin)
 router.post('/otp', userController.otpVerification);
 router.post('/signup', userController.postSignup)
 router.get('/logout', sessionMV.verifyLoginUser, userController.getLogout)
 
 router.get('/error',userController.getError)
+router.get('/error404',userController.getError404)
 
 router.get('/userProfile',sessionMV.verifyLoginUser, userController.getUserProfile)
 router.get('/addAddress', userController.getAddAddress)
@@ -22,7 +26,7 @@ router.post("/newPassword", sessionMV.verifyLoginUser, userController.postChange
 router.get('/editProfile',sessionMV.verifyLoginUser,userController.getEditProfile)
 router.post('/editProfile',sessionMV.verifyLoginUser,userController.postEditProfile)
 
-router.get('/productDetails', userController.getProductDetails)
+router.get('/productDetails', sessionMV.verifyLoginUser,userController.getProductDetails)
 router.get('/cart', sessionMV.verifyLoginUser, userController.getCart)
 router.get('/addToCart/:id', sessionMV.verifyLoginUser, userController.addToCart)
 router.post('/removeProduct', sessionMV.verifyLoginUser, userController.removeProduct)

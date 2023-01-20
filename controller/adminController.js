@@ -240,7 +240,20 @@ module.exports = {
     editCategory: async (req, res) => {
         try {
             const id = req.query.id;
-            await Category.findByIdAndUpdate({ _id: id }, { $set: { name: req.body.name, image: req.file.filename } });
+            await Category.findByIdAndUpdate({ _id: id }, { 
+                $set: { 
+                    name: req.body.name, 
+                    // image: req.file.filename 
+                } 
+            });
+            if(req?.file?.filename){
+                await Category.findByIdAndUpdate({ _id: id }, { 
+                    $set: { 
+                        
+                        image: req.file.filename 
+                    } 
+                });
+            }
 
             res.redirect('/admin/category');
         } catch (error) {
@@ -306,7 +319,7 @@ module.exports = {
                 color: req.body.color
             }
         })
-        if (req?.files?.filename) {
+        if (req?.file?.filename) {
             // const image = req.files.filename;
             await Product.findByIdAndUpdate({ _id: req.query.id }, {
                 $set: {

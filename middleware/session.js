@@ -10,7 +10,7 @@ module.exports = {
     if (req.session.userEmail) {
       next();
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   },
   verifyLoginUserWithoutSession: (req, res, next) => {
